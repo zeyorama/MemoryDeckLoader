@@ -21,9 +21,13 @@ public class MemoryDeckLoader {
 	 */
 	public static void main(String[] args) {
 		try {
-			new mainFrame().setVisible(true);
+			new mainFrame(true).setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				new mainFrame(false).setVisible(true);
+			} catch (Exception e1) {
+				System.exit(-1);
+			}
 		}
 	}
 
