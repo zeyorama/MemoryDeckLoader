@@ -1,4 +1,4 @@
 MemoryDeckLoader
 ================
 
-Deck generator program
+Deck generator program for Android App Memory: de.thm.ateam.memory

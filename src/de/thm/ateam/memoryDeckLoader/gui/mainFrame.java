@@ -8,7 +8,14 @@
  */
 package de.thm.ateam.memoryDeckLoader.gui;
 
+import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -20,6 +27,9 @@ import javax.swing.UIManager.LookAndFeelInfo;
 public class mainFrame extends JFrame {
 
 	private static final long serialVersionUID = 3434479642153869508L;
+	
+	private Container imageContainer;
+	private boolean imageContainerSet;
 	
 	private void initialize(boolean b) throws Exception {
 		this.setSize(550, 450);
@@ -37,11 +47,59 @@ public class mainFrame extends JFrame {
 			    }
 			}
 		
+		/* Container for Images ############################################################ */
+		imageContainer = new Container();
+		imageContainer.setVisible(false);
+		imageContainerSet = false;
 		
+		
+		
+		/* MenuBar with Menus and MenuItems ################################################ */
+		MenuBar mb = new MenuBar();
+		
+		Menu mFile = new Menu("File");
+		MenuItem miExit = new MenuItem("Exit");
+		miExit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		MenuItem miNew = new MenuItem("New");
+		miNew.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!imageContainerSet)
+					imageContainer.setVisible(true);
+				else
+					clearImageContainer();
+			}
+		});
+		
+		/* add to Menu File */
+		mFile.add(miNew);
+		mFile.add(miExit);
+		
+		/* add to menubar */
+		mb.add(mFile);
+		
+		/* global container ################################################################ */
+		Container c = new Container();
+		c.add(imageContainer);
+		
+		/* adding all to frame ############################################################# */
+		this.setMenuBar(mb);
+		this.add(c);
 	}
 	
 	public mainFrame(boolean b) throws Exception {
 		this.initialize(b);
+	}
+	
+	private void clearImageContainer() {
+		//TODO image container clear
 	}
 
 }
