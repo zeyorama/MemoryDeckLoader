@@ -46,13 +46,17 @@ public class ImageLoader {
 		JFileChooser fc = new JFileChooser();
 		File f = null;
 		
+		/* setting file filter for *.jpeg files */
 		fc.setFileFilter(new FileFilter() {
 			
 			public boolean accept(File f) {
-                return f.getName().toLowerCase().endsWith(".jpeg") || f.isDirectory();
+                /* returning only jpeg or directories */
+				return f.getName().toLowerCase().endsWith(".jpeg") || f.isDirectory();
             }
+			
             public String getDescription() {
-                return "*.jpeg";
+            	/* description for jpeg files */
+                return "JPEG Image File (*.jpeg)";
             }
 		});
 		fc.setAccessory(new ImagePreview(fc));
