@@ -18,16 +18,18 @@ public class Controller {
 
 	public Controller() {}
 	
-	public void startGUI() {
+	public boolean startGUI() {
 		try {
 			new mainFrame(true).setVisible(true);
 		} catch (Exception e) {
 			try {
 				new mainFrame(false).setVisible(true);
 			} catch (Exception e1) {
-				System.exit(-1);
+				return false;
 			}
 		}
+		
+		return true;
 	}
 	
 }
