@@ -41,6 +41,10 @@ public class Deck {
 		zos = new ZipOutputStream(new FileOutputStream(zip));
 	}
 	
+	public Deck(int count) {
+		img = new Image[count];
+	}
+	
 	public ImageIcon addImage(String path) throws IOException {
 	    BufferedImage i = ImageIO.read(new File(path));
 		

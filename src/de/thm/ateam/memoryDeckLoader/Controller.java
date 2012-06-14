@@ -8,6 +8,8 @@
  */
 package de.thm.ateam.memoryDeckLoader;
 
+import java.io.IOException;
+
 import de.thm.ateam.memoryDeckLoader.gui.mainFrame;
 
 /**
@@ -16,14 +18,19 @@ import de.thm.ateam.memoryDeckLoader.gui.mainFrame;
  */
 public class Controller {
 
+	private mainFrame mF;
+	private Deck deck;
+	
 	public Controller() {}
 	
 	public boolean startGUI() {
 		try {
-			new mainFrame(true).setVisible(true);
+			mF = new mainFrame(true);
+			mF.setVisible(true);
 		} catch (Exception e) {
 			try {
-				new mainFrame(false).setVisible(true);
+				mF = new mainFrame(false);
+				mF.setVisible(true);
 			} catch (Exception e1) {
 				return false;
 			}
@@ -32,4 +39,15 @@ public class Controller {
 		return true;
 	}
 	
+	public void newDeck(int imageCount) {
+		deck = new Deck(imageCount);
+	}
+	
+	public void addImage(String pathToImage) {
+		try {
+			deck.addImage(pathToImage);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+	}
 }
