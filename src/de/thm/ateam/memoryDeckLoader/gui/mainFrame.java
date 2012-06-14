@@ -52,8 +52,6 @@ public class mainFrame extends JFrame {
 		imageContainer.setVisible(false);
 		imageContainerSet = false;
 		
-		
-		
 		/* MenuBar with Menus and MenuItems ################################################ */
 		MenuBar mb = new MenuBar();
 		
@@ -77,12 +75,34 @@ public class mainFrame extends JFrame {
 					clearImageContainer();
 			}
 		});
+		MenuItem miDelete = new MenuItem("Delete");
+		miNew.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				imageContainer.setVisible(false);
+				imageContainerSet = false;
+				clearImageContainer();
+			}
+		});
+		MenuItem miExport = new MenuItem("Export");
+		miNew.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO exportieren der zip file mit bildern und der JSON file
+			}
+		});
 		
 		/* add to Menu File */
 		mFile.add(miNew);
+		mFile.add(miDelete);
+		mFile.addSeparator();
+		mFile.add(miExport);
+		mFile.addSeparator();
 		mFile.add(miExit);
 		
-		/* add to menubar */
+		/* add to menu bar */
 		mb.add(mFile);
 		
 		/* global container ################################################################ */
