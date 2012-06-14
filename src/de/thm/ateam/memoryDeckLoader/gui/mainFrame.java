@@ -96,6 +96,7 @@ public class mainFrame extends JFrame {
 	
 	public mainFrame(boolean b) throws Exception {
 		this.initialize(b);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private void clearImageContainer() {
