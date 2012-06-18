@@ -23,7 +23,7 @@ public class MemoryDeckLoader {
 		PrintStream stdout = System.out;
 		Controller c = new Controller();
 		
-		if (c.startGUI()) {
+		if (!c.startGUI()) {
 			System.setOut(stdout);
 			System.out.println("error: gui not drawable");
 		}

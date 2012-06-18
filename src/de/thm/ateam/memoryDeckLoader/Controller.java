@@ -30,6 +30,9 @@ public class Controller {
 			return true;
 		} catch (Exception e) {
 			try {
+				System.setOut(System.out);
+				System.out.println("error: Nimbus not found");
+				System.out.println(e.getLocalizedMessage());
 				mF = new mainFrame(false, this);
 				mF.setVisible(true);
 				return true;
