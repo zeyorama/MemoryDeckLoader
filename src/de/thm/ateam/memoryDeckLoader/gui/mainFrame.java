@@ -16,9 +16,16 @@ import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+
+import de.thm.ateam.memoryDeckLoader.Controller;
 
 /**
  * @author Frank Kevin Zey
@@ -30,6 +37,8 @@ public class mainFrame extends JFrame {
 	
 	private Container imageContainer;
 	private boolean imageContainerSet;
+	private Controller controller;
+	private JList<String> imgList;
 	
 	private void initialize(boolean b) throws Exception {
 		this.setSize(550, 450);
@@ -51,6 +60,30 @@ public class mainFrame extends JFrame {
 		imageContainer = new Container();
 		imageContainer.setVisible(false);
 		imageContainerSet = false;
+		imageContainer.setLayout(new FlowLayout(FlowLayout.LEADING));
+		
+		DefaultListModel<String> dlm = new DefaultListModel<String>();
+		
+		dlm.addElement("test");
+		
+		imgList = new JList<String>(dlm);
+		imgList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		imgList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		imgList.setVisibleRowCount(-1);
+		imageContainer.add(imgList);
+		
+		JPopupMenu rightClickPopUp = new JPopupMenu();
+		JMenuItem deleteRightClickPopUp = new JMenuItem("Delete Item");
+		deleteRightClickPopUp.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//int index = imgList.getSelectedIndex();
+			    //Deck deck = controller.getCurrentDeck();
+				//deck.deleteByIndex(index);
+			}
+		} );
+		rightClickPopUp.add(imgList);
 		
 		/* MenuBar with Menus and MenuItems ################################################ */
 		MenuBar mb = new MenuBar();
@@ -83,6 +116,7 @@ public class mainFrame extends JFrame {
 				imageContainer.setVisible(false);
 				imageContainerSet = false;
 				clearImageContainer();
+				mainFrame.this.repaint();
 			}
 		});
 		MenuItem miExport = new MenuItem("Export");
@@ -90,7 +124,7 @@ public class mainFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO exportieren der zip file mit bildern und der JSON file
+				
 			}
 		});
 		
@@ -114,13 +148,15 @@ public class mainFrame extends JFrame {
 		this.add(c);
 	}
 	
-	public mainFrame(boolean b) throws Exception {
+	public mainFrame(boolean b, Controller c) throws Exception {
+		this.controller = c;
 		this.initialize(b);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private void clearImageContainer() {
-		//TODO image container clear
+		controller.deleteDeck();
+		imgList.removeAll();
 	}
 
 }

@@ -25,22 +25,26 @@ public class Controller {
 	
 	public boolean startGUI() {
 		try {
-			mF = new mainFrame(true);
+			mF = new mainFrame(true, this);
 			mF.setVisible(true);
+			return true;
 		} catch (Exception e) {
 			try {
-				mF = new mainFrame(false);
+				mF = new mainFrame(false, this);
 				mF.setVisible(true);
+				return true;
 			} catch (Exception e1) {
 				return false;
 			}
 		}
-		
-		return true;
 	}
 	
-	public void newDeck(int imageCount) {
-		deck = new Deck(imageCount);
+	public void newDeck() {
+		deck = new Deck();
+	}
+	
+	public Deck getCurrentDeck() {
+		return this.deck;
 	}
 	
 	public void addImage(String pathToImage) {
@@ -49,5 +53,9 @@ public class Controller {
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	public void deleteDeck() {
+		this.deck = null;
 	}
 }

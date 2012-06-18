@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -28,21 +29,21 @@ import javax.swing.ImageIcon;
  */
 public class Deck {
 	
-	Image []img;
+	ArrayList<Image> img;
 	private ZipOutputStream zos;
 	
-	public Deck(byte count, String path) throws IOException {
+	public Deck(String path) throws IOException {
 		File zip = new File(path);
 		
 		if (zip.createNewFile())
 			System.out.println(path + " successfully created");
 		
-		img = new Image[count];
+		img = new ArrayList<Image>();
 		zos = new ZipOutputStream(new FileOutputStream(zip));
 	}
 	
-	public Deck(int count) {
-		img = new Image[count];
+	public Deck() {
+		img = new ArrayList<Image>();
 	}
 	
 	public ImageIcon addImage(String path) throws IOException {
@@ -55,15 +56,7 @@ public class Deck {
 	}
 	
 	public void deleteImage(Image i) {
-		for (int j = 0; j < img.length; j++) {
-			if (i.equals(img[j])) {
-				img[j] = null;
-				break;
-			}
-			
-		}
-		
-		img = this.reorganizeArray();
+		img.remove(i);
 	}
 	
 	public ZipFile genZipFile(String path) throws IOException {
@@ -72,18 +65,8 @@ public class Deck {
 		return zip;
 	}
 	
-	private Image[] reorganizeArray() {
-		Image[] i = img;
-		
-		for (int index = 0; index < i.length; index++) {
-			if (i[index] == null)
-				if (index+1 < i.length) {
-					i[index] = i[index+1];
-					i[index+1] = null;
-				}
-		}
-		
-		return i;
+	public void deleteByIndex(int index) {
+		img.remove(index);
 	}
 
 }

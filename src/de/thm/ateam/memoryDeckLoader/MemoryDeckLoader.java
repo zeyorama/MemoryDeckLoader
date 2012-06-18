@@ -28,7 +28,6 @@ public class MemoryDeckLoader {
 			System.out.println("error: gui not drawable");
 		}
 		
-		
 	}
 
 }
