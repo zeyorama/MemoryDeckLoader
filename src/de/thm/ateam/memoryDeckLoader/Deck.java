@@ -8,7 +8,6 @@
  */
 package de.thm.ateam.memoryDeckLoader;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,7 +25,6 @@ import java.util.zip.ZipOutputStream;
 public class Deck {
 	
 	ArrayList<String> img;
-	private ZipOutputStream zos;
 	private File path = null;
 	
 	public Deck(File path) throws IOException {
@@ -43,59 +41,33 @@ public class Deck {
 	}
 	
 	public ZipFile genZipFile() throws IOException {
-		try {
-			if (path == null) {
-				System.out.println("file is null");
-				return null;
-			}
-			System.out.println(path.getAbsolutePath());
-			zos  = new ZipOutputStream( new FileOutputStream(path) ) ;
-		} catch(IOException ex) {
-		   ex.printStackTrace();
-		
-		} finally {
-			BufferedInputStream bis = null;
-			try	{
-				for (String s : img) {
-					bis = new BufferedInputStream( new FileInputStream(s) );
-					int avail = bis.available();
-					byte[] buffer = new byte[avail];
-					
-					if ( avail>0 )
-						bis.read(buffer, 0, avail);
-	
-					ZipEntry e = new ZipEntry(new File(s).getAbsolutePath());
-					
-					zos.putNextEntry(e);
-					zos.write(buffer, 0, buffer.length);
-					zos.closeEntry();
-					
-				}
-			} catch(IOException ex) {
-			   ex.printStackTrace();
-			
-			} finally {
-			   try {
-			      if(bis!=null)
-			    	  bis.close();
-			      
-			   } catch(Exception ex) {
-				   ex.printStackTrace();
-			   
-			   }
-			}
-			
-			try {
-				if(zos!=null)
-					zos.close();
-			   
-				return null;
-			   
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			
-			}
-		}
+		// Create a buffer for reading the files
+	    try {
+	        // Create the ZIP file
+	        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(path));
+	    
+	        // Compress the files
+	        for (String s : img) {
+	        	byte buf[] = new byte[(int) new File(s).length()];
+	            FileInputStream in = new FileInputStream(s);
+	    
+	            // Add ZIP entry to output stream.
+	            out.putNextEntry(new ZipEntry(s));
+	    
+	            // Transfer bytes from the file to the ZIP file
+	            int len;
+	            while ((len = in.read(buf)) > 0)
+	                out.write(buf, 0, len);
+	    
+	            // Complete the entry
+	            out.closeEntry();
+	            in.close();
+	        }
+	    
+	        // Complete the ZIP file
+	        out.close();
+	    } catch (IOException e) {
+	    }
 		
 		File f = path;
 		path = null;
