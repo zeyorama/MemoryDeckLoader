@@ -8,6 +8,7 @@
  */
 package de.thm.ateam.memoryDeckLoader.io;
 
+import java.awt.Component;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -42,7 +43,7 @@ public class ImageLoader {
 	 * 
 	 * @return File Returns a selected file, otherwise null
 	 */
-	public File getImageWithUI() {
+	public File getImageWithUI(Component c) {
 		JFileChooser fc = new JFileChooser();
 		File f = null;
 		
@@ -50,17 +51,33 @@ public class ImageLoader {
 		fc.setFileFilter(new FileFilter() {
 			
 			public boolean accept(File f) {
-                /* returning only jpeg or directories */
-				return f.getName().toLowerCase().endsWith(".jpeg") || f.isDirectory();
+                /* returning only jpeg, jpg or directories */
+				return f.getName().toLowerCase().endsWith(".jpeg")
+						|| f.isDirectory()
+						|| f.getName().toLowerCase().endsWith(".jpg");
             }
 			
             public String getDescription() {
             	/* description for jpeg files */
-                return "JPEG Image File (*.jpeg)";
+                return "JPEG Image File (*.jpeg, *.jpg)";
             }
 		});
 		fc.setAccessory(new ImagePreview(fc));
-		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+		if (fc.showOpenDialog(c) == JFileChooser.APPROVE_OPTION)
+			f = fc.getSelectedFile();
+		
+		return f;
+	}
+	
+	/**
+	 * Opens an save dialog to select a file
+	 * 
+	 * @return File Returns a selected file, otherwise null
+	 */
+	public File setNewFileWithUI(Component c) {
+		JFileChooser fc = new JFileChooser();
+		File f = null;
+		if (fc.showSaveDialog(c) == JFileChooser.APPROVE_OPTION)
 			f = fc.getSelectedFile();
 		
 		return f;

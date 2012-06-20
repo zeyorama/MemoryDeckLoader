@@ -10,20 +10,18 @@ package de.thm.ateam.memoryDeckLoader.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.List;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipFile;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,17 +34,20 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import de.thm.ateam.memoryDeckLoader.Controller;
+import de.thm.ateam.memoryDeckLoader.Deck;
+import de.thm.ateam.memoryDeckLoader.io.ImageLoader;
 
 /**
  * @author Frank Kevin Zey
  *
  */
-public class mainFrame extends JFrame {
+public class mainFrame extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 3434479642153869508L;
 	
 	private Controller controller;
 	private List iList;
+	private JLabel backSideLabel;
 	
 	private void initialize(boolean b) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		this.setSize(550, 450);
@@ -65,39 +66,38 @@ public class mainFrame extends JFrame {
 			}
 		
 		/* Container for Image-Paths ############################################################ */
-		JPanel iP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel iP = new JPanel(new BorderLayout());
+		
+		backSideLabel = new JLabel();
 		
 		iList = new List(-1);
 		iList.setSize(300, 450);
-		iList.add("test");
 		iList.setVisible(true);
 		
-		iList.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				
-			}
-		});
-		
 		iList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent arg0) {
-				JPopupMenu pop = new JPopupMenu();
-				JMenuItem m = new JMenuItem("Delete");
-				m.addActionListener(new ActionListener() {
+	        @Override
+			public void mousePressed(MouseEvent evt) {
+	        	if (evt.getButton() == MouseEvent.BUTTON3)
+	            	showMenu(evt);
+	        }
+		
+	        public void showMenu(MouseEvent evt){
+				JPopupMenu menu = new JPopupMenu();
+			    JMenuItem item = new JMenuItem("Delete");
+			    item.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						System.out.println(iList.getSelectedItem());
+						iList.remove(iList.getSelectedIndex());
 					}
 				});
-				pop.add(m);
-				
-				pop.show(iList.getParent(), iList.getParent().getX(), iList.getParent().getY());
+			    menu.add(item);
+			    menu.show(iList, evt.getX(), evt.getY()); 
 			}
 		});
 		
-		iP.add(iList);
+		iP.add(backSideLabel, BorderLayout.NORTH);
+		iP.add(iList, BorderLayout.SOUTH);
 		iP.setVisible(true);
 		
 		/* MenuBar with Menus and MenuItems ################################################ */
@@ -129,11 +129,26 @@ public class mainFrame extends JFrame {
 			}
 		});
 		MenuItem miExport = new MenuItem("Export");
-		miNew.addActionListener(new ActionListener() {
+		miExport.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				controller.newDeck(mainFrame.this);
+				try {
+					Deck d = controller.getCurrentDeck();
+					
+					if (d != null) {
+						d.add(backSideLabel.getText());
+						for (String s : iList.getItems())
+							d.add(s);
+						
+						ZipFile zip = d.genZipFile();
+						System.out.println(zip.getInputStream(zip.getEntry(backSideLabel.getText())).toString());
+					}
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -149,9 +164,15 @@ public class mainFrame extends JFrame {
 		mb.add(mFile);
 		
 		/* cointainer for buttons etc ###################################################### */
-		JButton buttonBIAdd = new JButton("Add Backimage");
-		JButton buttonFIAdd = new JButton("Add Frontimage");
+		JButton buttonBIAdd = new JButton("Add Backside Image");
+		JButton buttonFIAdd = new JButton("Add Frontside Image");
 
+		buttonBIAdd.setActionCommand("addBI");
+		buttonFIAdd.setActionCommand("addFI");
+
+		buttonBIAdd.addActionListener(this);
+		buttonFIAdd.addActionListener(this);
+		
 		buttonBIAdd.setVisible(true);
 		buttonFIAdd.setVisible(true);
 		
@@ -177,6 +198,26 @@ public class mainFrame extends JFrame {
 		/* adding all to frame ############################################################# */
 		this.setMenuBar(mb);
 		this.add(p);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		String command = e.getActionCommand();
+
+		if (command.equals("addBI")) {
+			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this);
+			if (path != null)
+				backSideLabel.setText(path.getAbsolutePath());
+
+		} else if (command.equals("addFI")) {
+			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this);
+			if (path != null)
+				iList.add(path.getAbsolutePath());
+			
+		} else
+			System.err.println("unknown command: "+command);
+		
+		this.pack();
+		this.repaint();
 	}
 	
 	public mainFrame(boolean b, Controller c) throws Exception {

@@ -8,9 +8,12 @@
  */
 package de.thm.ateam.memoryDeckLoader;
 
+import java.awt.Component;
+import java.io.File;
 import java.io.IOException;
 
 import de.thm.ateam.memoryDeckLoader.gui.mainFrame;
+import de.thm.ateam.memoryDeckLoader.io.ImageLoader;
 
 /**
  * @author Frank Kevin Zey
@@ -42,8 +45,15 @@ public class Controller {
 		}
 	}
 	
-	public void newDeck() {
-		deck = new Deck();
+	public void newDeck(Component c) {
+		try {
+			File f = ImageLoader.getInstance().setNewFileWithUI(c);
+			if (f != null)
+				deck = new Deck(f.getAbsolutePath());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Deck getCurrentDeck() {
@@ -51,11 +61,7 @@ public class Controller {
 	}
 	
 	public void addImage(String pathToImage) {
-		try {
-			deck.addImage(pathToImage);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+		deck.add(pathToImage);
 	}
 	
 	public void deleteDeck() {
