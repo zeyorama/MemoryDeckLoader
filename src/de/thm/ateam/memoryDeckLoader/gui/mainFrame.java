@@ -68,7 +68,7 @@ public class mainFrame extends JFrame implements ActionListener {
 		/* Container for Image-Paths ############################################################ */
 		JPanel iP = new JPanel(new BorderLayout());
 		
-		backSideLabel = new JLabel();
+		backSideLabel = new JLabel("");
 		
 		iList = new List(-1);
 		iList.setSize(300, 450);
@@ -134,16 +134,20 @@ public class mainFrame extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.newDeck(mainFrame.this);
+				
 				try {
 					Deck d = controller.getCurrentDeck();
 					
 					if (d != null) {
-						d.add(backSideLabel.getText());
+						if (!backSideLabel.getText().equals(""))
+							d.add(backSideLabel.getText());
+						
 						for (String s : iList.getItems())
 							d.add(s);
 						
 						ZipFile zip = d.genZipFile();
-						System.out.println(zip.getInputStream(zip.getEntry(backSideLabel.getText())).toString());
+						if (zip != null)
+							System.out.println(zip.getInputStream(zip.getEntry(backSideLabel.getText())).toString());
 					}
 					
 				} catch (IOException e1) {
@@ -232,7 +236,9 @@ public class mainFrame extends JFrame implements ActionListener {
 	
 	private void clearImageContainer() {
 		controller.deleteDeck();
+		backSideLabel.setText("");
 		iList.removeAll();
+		this.pack();
 		this.repaint();
 	}
 

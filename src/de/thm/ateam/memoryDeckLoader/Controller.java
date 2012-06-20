@@ -49,7 +49,7 @@ public class Controller {
 		try {
 			File f = ImageLoader.getInstance().setNewFileWithUI(c);
 			if (f != null)
-				deck = new Deck(f.getAbsolutePath());
+				deck = new Deck(f);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,5 +66,9 @@ public class Controller {
 	
 	public void deleteDeck() {
 		this.deck = null;
+	}
+	
+	public void resetDeck() {
+		this.deck.reset();
 	}
 }

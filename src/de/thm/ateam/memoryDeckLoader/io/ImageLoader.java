@@ -45,7 +45,6 @@ public class ImageLoader {
 	 */
 	public File getImageWithUI(Component c) {
 		JFileChooser fc = new JFileChooser();
-		File f = null;
 		
 		/* setting file filter for *.jpeg files */
 		fc.setFileFilter(new FileFilter() {
@@ -64,9 +63,9 @@ public class ImageLoader {
 		});
 		fc.setAccessory(new ImagePreview(fc));
 		if (fc.showOpenDialog(c) == JFileChooser.APPROVE_OPTION)
-			f = fc.getSelectedFile();
+			return fc.getSelectedFile();
 		
-		return f;
+		return null;
 	}
 	
 	/**
@@ -76,11 +75,11 @@ public class ImageLoader {
 	 */
 	public File setNewFileWithUI(Component c) {
 		JFileChooser fc = new JFileChooser();
-		File f = null;
-		if (fc.showSaveDialog(c) == JFileChooser.APPROVE_OPTION)
-			f = fc.getSelectedFile();
 		
-		return f;
+		if (fc.showSaveDialog(c) == JFileChooser.APPROVE_OPTION)
+			return fc.getSelectedFile();
+		
+		return null;
 	}
 
 }
