@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileFilter;
 public class ImageLoader {
 	
 	private static ImageLoader il = null;
+	private final int x = 12;
 	
 	private ImageLoader() {}
 	
@@ -49,16 +50,33 @@ public class ImageLoader {
 		/* setting file filter for *.jpeg files */
 		fc.setFileFilter(new FileFilter() {
 			
-			public boolean accept(File f) {
+			private final int MAX_LENGTH = 1024 * x;
+			private final String MAX_LENGTH_STRING = MAX_LENGTH/1024 + "KB";
+			
+			private File accept_format(File f) {
                 /* returning only jpeg, jpg or directories */
-				return f.getName().toLowerCase().endsWith(".jpeg")
+				if (f.getName().toLowerCase().endsWith(".jpeg")
 						|| f.isDirectory()
-						|| f.getName().toLowerCase().endsWith(".jpg");
+						|| f.getName().toLowerCase().endsWith(".jpg"))
+					return f;
+				
+				return null;
             }
+			
+			public boolean accept(File f) {
+				File ff = this.accept_format(f);
+				if (ff != null)
+					if (ff.isDirectory())
+						return true;
+					else if (ff.length() <= MAX_LENGTH)
+						return true;
+				
+				return false;
+			}
 			
             public String getDescription() {
             	/* description for jpeg files */
-                return "JPEG Image File (*.jpeg, *.jpg)";
+                return "JPEG Image File (*.jpeg, *.jpg) only till " + MAX_LENGTH_STRING;
             }
 		});
 		fc.setAccessory(new ImagePreview(fc));

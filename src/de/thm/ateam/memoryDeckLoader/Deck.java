@@ -41,32 +41,37 @@ public class Deck {
 	}
 	
 	public ZipFile genZipFile() throws IOException {
-		// Create a buffer for reading the files
-	    try {
-	        // Create the ZIP file
+		int c = 0;
+		String backSide = img.get(0);
+		
+		try {
 	        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(path));
 	    
-	        // Compress the files
 	        for (String s : img) {
+	        	if (s.equals("")) {
+	        		c++;
+	        		continue;
+	        	}
+	        	
+	        	if ( (c > 33 && !backSide.equals("")) || (c > 32 && backSide.equals("")) )
+	        		break;
+	        	
 	        	byte buf[] = new byte[(int) new File(s).length()];
 	            FileInputStream in = new FileInputStream(s);
 	    
-	            // Add ZIP entry to output stream.
-	            out.putNextEntry(new ZipEntry(s));
+	            out.putNextEntry(new ZipEntry((new Integer(c++).toString() + ".jpg")));
 	    
-	            // Transfer bytes from the file to the ZIP file
 	            int len;
 	            while ((len = in.read(buf)) > 0)
 	                out.write(buf, 0, len);
 	    
-	            // Complete the entry
 	            out.closeEntry();
 	            in.close();
 	        }
 	    
-	        // Complete the ZIP file
 	        out.close();
 	    } catch (IOException e) {
+	    	System.out.println(e.getMessage());
 	    }
 		
 		File f = path;

@@ -21,6 +21,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.swing.JButton;
@@ -48,6 +50,7 @@ public class mainFrame extends JFrame implements ActionListener {
 	private Controller controller;
 	private List iList;
 	private JLabel backSideLabel;
+	private MenuItem miExport;
 	
 	private void initialize(boolean b) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		this.setSize(550, 450);
@@ -120,15 +123,8 @@ public class mainFrame extends JFrame implements ActionListener {
 				clearImageContainer();
 			}
 		});
-		MenuItem miDelete = new MenuItem("Delete");
-		miNew.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				clearImageContainer();
-			}
-		});
-		MenuItem miExport = new MenuItem("Export");
+		miExport = new MenuItem("Export");
+		miExport.setEnabled(false);
 		miExport.addActionListener(new ActionListener() {
 			
 			@Override
@@ -139,16 +135,19 @@ public class mainFrame extends JFrame implements ActionListener {
 					Deck d = controller.getCurrentDeck();
 					
 					if (d != null) {
-						if (!backSideLabel.getText().equals(""))
-							d.add(backSideLabel.getText());
+						d.add(backSideLabel.getText());
 						
 						for (String s : iList.getItems())
 							d.add(s);
 						
 						ZipFile zip = d.genZipFile();
+						Enumeration<? extends ZipEntry> enu = zip.entries();
 						if (zip != null)
-							System.out.println(zip.getInputStream(zip.getEntry(backSideLabel.getText())).toString());
+							while (enu.hasMoreElements())
+								System.out.println(enu.nextElement().getName());
 					}
+					
+					clearImageContainer();
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -158,8 +157,6 @@ public class mainFrame extends JFrame implements ActionListener {
 		
 		/* add to Menu File */
 		mFile.add(miNew);
-		mFile.add(miDelete);
-		mFile.addSeparator();
 		mFile.add(miExport);
 		mFile.addSeparator();
 		mFile.add(miExit);
@@ -206,16 +203,23 @@ public class mainFrame extends JFrame implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-
+		
 		if (command.equals("addBI")) {
 			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this);
 			if (path != null)
 				backSideLabel.setText(path.getAbsolutePath());
 
+			if (iList.getItems().length == 32)
+				miExport.setEnabled(true);
+
 		} else if (command.equals("addFI")) {
 			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this);
+			
 			if (path != null)
 				iList.add(path.getAbsolutePath());
+			
+			if (iList.getItems().length == 32)
+				miExport.setEnabled(true);
 			
 		} else
 			System.err.println("unknown command: "+command);
