@@ -42,7 +42,6 @@ public class Deck {
 	
 	public ZipFile genZipFile() throws IOException {
 		int c = 0;
-		String backSide = img.get(0);
 		
 		try {
 	        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(path));
@@ -53,7 +52,7 @@ public class Deck {
 	        		continue;
 	        	}
 	        	
-	        	if ( (c > 33 && !backSide.equals("")) || (c > 32 && backSide.equals("")) )
+	        	if ( c > 33 )
 	        		break;
 	        	
 	        	byte buf[] = new byte[(int) new File(s).length()];
