@@ -23,7 +23,7 @@ import javax.swing.filechooser.FileFilter;
 public class ImageLoader {
 	
 	private static ImageLoader il = null;
-	private final int x = 12;
+	private final int x = 50;
 	
 	private ImageLoader() {}
 	
