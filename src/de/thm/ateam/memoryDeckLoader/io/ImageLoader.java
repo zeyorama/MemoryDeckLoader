@@ -44,8 +44,10 @@ public class ImageLoader {
 	 * 
 	 * @return File Returns a selected file, otherwise null
 	 */
-	public File getImageWithUI(Component c) {
+	public File getImageWithUI(Component c, boolean b) {
 		JFileChooser fc = new JFileChooser();
+		
+		fc.setMultiSelectionEnabled(b);
 		
 		/* setting file filter for *.jpeg files */
 		fc.setFileFilter(new FileFilter() {
