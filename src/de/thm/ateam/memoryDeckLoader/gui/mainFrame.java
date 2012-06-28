@@ -205,7 +205,7 @@ public class mainFrame extends JFrame implements ActionListener {
 		String command = e.getActionCommand();
 		
 		if (command.equals("addBI")) {
-			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this, false);
+			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this, false)[0];
 			if (path != null)
 				backSideLabel.setText(path.getAbsolutePath());
 
@@ -213,12 +213,13 @@ public class mainFrame extends JFrame implements ActionListener {
 				miExport.setEnabled(true);
 
 		} else if (command.equals("addFI")) {
-			File path = ImageLoader.getInstance().getImageWithUI(mainFrame.this, true);
+			File[] path = ImageLoader.getInstance().getImageWithUI(mainFrame.this, true);
 			
 			if (path != null)
-				iList.add(path.getAbsolutePath());
+				for (int i = 0; i < path.length; i++)
+					iList.add(path[i].getAbsolutePath());
 			
-			if (iList.getItems().length == 32)
+			if (iList.getItems().length >= 32)
 				miExport.setEnabled(true);
 			
 		} else

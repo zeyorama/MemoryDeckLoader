@@ -44,7 +44,7 @@ public class ImageLoader {
 	 * 
 	 * @return File Returns a selected file, otherwise null
 	 */
-	public File getImageWithUI(Component c, boolean b) {
+	public File[] getImageWithUI(Component c, boolean b) {
 		JFileChooser fc = new JFileChooser();
 		
 		fc.setMultiSelectionEnabled(b);
@@ -83,7 +83,10 @@ public class ImageLoader {
 		});
 		fc.setAccessory(new ImagePreview(fc));
 		if (fc.showOpenDialog(c) == JFileChooser.APPROVE_OPTION)
-			return fc.getSelectedFile();
+			if (!b)
+				return new File[] {fc.getSelectedFile()};
+			else
+				return fc.getSelectedFiles();
 		
 		return null;
 	}
